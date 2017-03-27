@@ -1,16 +1,16 @@
 Package: lifxr
 Title: Interface to the LIFX API
 Version: 0.0.2
-Description: Simple interface to the LIFX cloud API, https://api.lifx.com
-License: CC0 
-Authors@R: person('Carl', 'Boettiger', email='cboettig@gmail.com', role = c('aut', 'cre'))
-URL: https://github.com/cboettig/lifxr
-BugReports: https://github.com/cboettig/lifxr/issues
-VignetteBuilder: knitr
-Depends: R (>= 3.1.2)
-Imports:
+Description: Simple interface to the LIFX cloud API, https://api.lifx.com.
+License: MIT + file LICENSE
+Authors@R: c(person('Carl', 'Boettiger', email='cboettig@gmail.com', role = c('aut', 'cre')), person("Roel M", "Hogervorst", email = "hogervorst.rm@gmail.com", role = "ctb"))
+URL: https://github.com/RMHogervorst/lifxr
+BugReports: https://github.com/RMHogervorst/lifxr/issues
+Depends: R (>= 3.3.2)
+Imports: 
     httr (>= 0.3),
     jsonlite
-Suggests:
+Suggests: 
     knitr (>= 1.5),
     testthat
+RoxygenNote: 6.0.1

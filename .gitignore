@@ -2,3 +2,4 @@
 *.Rproj
 */*.Rhistory
 .Rhistory
+R/colors.R

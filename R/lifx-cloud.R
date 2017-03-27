@@ -251,6 +251,27 @@ parse_color <- function(string){
   jsonlite::fromJSON(content(results, as="text"))
 }
 
-
+#' Set the state, a general function
+#' 
+#' @param selector Which lights do you want? defaults to "all"
+#' @param power either on or off, defaults to on, makes not sense to shut the light off and change the color
+#' @param color a name or combination of hue, brightness, saturation etc.
+#' @param brightness between 0-1 how much light must the bulb emit
+#' @param saturation between 0-1 how much color do you want to add to white
+#' @param duration a fade duration in seconds, f.i. 1 second
+#' @export
+set_state <- function(selector ="all", power = "on", color= NULL, 
+                      brightness = NULL, saturation= NULL,
+                      duration = 1.0){
+    result <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
+                  query = list(power = power,
+                               color= color,
+                               duration = duration,
+                               brightness = brightness,
+                               saturation = saturation, # doesn't work. because needs to be in color.
+                               access_token = get_accesstoken())
+    )
+    httr::content(result)
+}
 
 
