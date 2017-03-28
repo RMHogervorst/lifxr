@@ -6,7 +6,7 @@ License: MIT + file LICENCE
 Authors@R: c(person('Carl', 'Boettiger', email='cboettig@gmail.com', role = c('aut', 'cre')), person("Roel M", "Hogervorst", email = "hogervorst.rm@gmail.com", role = "ctb"))
 URL: https://github.com/RMHogervorst/lifxr
 BugReports: https://github.com/RMHogervorst/lifxr/issues
-Depends: R (>= 3.3.2)
+Depends: R (>= 3.2.2)
 Imports: 
     httr (>= 0.3),
     jsonlite
