@@ -16,7 +16,7 @@ set_state(selector = "all", power = "on", color = NULL,
 
 \item{brightness}{between 0-1 how much light must the bulb emit}
 
-\item{saturation}{between 0-1 how much color do you want to add}
+\item{saturation}{between 0-1 how much color do you want to add to white}
 
 \item{duration}{a fade duration in seconds, f.i. 1 second}
 }

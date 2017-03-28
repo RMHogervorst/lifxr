@@ -7,8 +7,32 @@ get_accesstoken <- function(){
     key <- Sys.getenv("LIFX_PAT",unset = NA)
     if(is.na(key))stop("No key found")
     key
-    
 }
+## limieten stellne: hue:[0-360]
+check_hue <- function(hue){
+    if(hue <0 | hue >360){stop("hue needs to be between 0 and 360")}
+    hue
+}
+## saturation:[0.0-1.0]
+check_saturation <- function(value){
+    if(value <0 | value >1){stop("saturation needs to be between 0 and 1")}
+    value
+}
+## brightness:[0.0-1.0]
+check_brightness <- function(value){
+    if(value <0 | value >1){stop("brightness needs to be between 0 and 1")}
+    value
+}
+## kelvin:[2500-9000]  # maar geef boodschap als ook saturation gegeven, slaat
+check_kelvin <- function(value){
+    if(value <2500 | value >9000){stop("kelvin needs to be between 2500 and 9000")}
+    value
+}
+## saturation over, want zit al in kelvin.
+# arguments name:[0-9]
+# except color. 
+
+
 
 #' ping
 #' 
@@ -74,8 +98,9 @@ current_color <- function(selector = "all"){
 #' @return httr response object
 #' @export
 toggle <- function(selector = "all"){
-  POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/toggle.json"), 
+  results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/toggle.json"), 
        query = list(access_token = get_accesstoken()))
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 #' power
@@ -88,10 +113,11 @@ toggle <- function(selector = "all"){
 #' @details Not exported because it conflicts with stats::power. see on() and off()
 power <- function(state = c("on", "off"), selector = "all", duration = 1.0){
   state <- match.arg(state)
-  PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
+  results <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
       query = list(power = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 
@@ -140,11 +166,12 @@ on <- function(selector = "all", duration = 1.0){
 #' @return httr response object
 #' @export
 color <- function(color, selector="all", duration = 1.0, power_on = TRUE){
-  PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
+  results <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
       query = list(color = color, 
                    duration = duration, 
                    power_on = power_on,
                    access_token = get_accesstoken()))
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 
@@ -172,8 +199,9 @@ breathe <- function(color, from_color = current_color(selector),
                    peak = peak,
                    power_on = power_on,
                    access_token = get_accesstoken())
-  POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/breathe"),
+  results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/breathe"),
        query = settings)
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 #' pulse
@@ -194,8 +222,9 @@ pulse <- function(color, from_color = current_color(selector)[[1]],
                    duty_cycle = duty_cycle,
                    power_on = power_on,
                    access_token = get_accesstoken())
-  POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/pulse.json"),
+  results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/pulse.json"),
        query = settings)
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 #' label
@@ -220,10 +249,11 @@ label <- function(label, selector) {
 #' @export
 scene <- function(state = c("on", "off"), scene_id, duration = 1.0){
   state <- match.arg(state)
-  PUT(paste0(BASE, "/", VERSION, "/scenes/scene_id:", scene_id, "/activate.json"), 
+  results <- PUT(paste0(BASE, "/", VERSION, "/scenes/scene_id:", scene_id, "/activate.json"), 
       query = list(state = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
+  jsonlite::fromJSON(content(results, as="text"))
 }
 
 #' Lists all the scenes available in the users account
@@ -263,6 +293,9 @@ parse_color <- function(string){
 set_state <- function(selector ="all", power = "on", color= NULL, 
                       brightness = NULL, saturation= NULL,
                       duration = 1.0){
+    if(!is.null(brightness)){brightness <- check_brightness(brightness)}
+    if(!is.null(saturation)){brightness <- check_saturation(saturation)}
+    #if(grepl("hue", color)){} # extract hue and check for hue:number and check hue.
     result <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
                   query = list(power = power,
                                color= color,
