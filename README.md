@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/RMHogervorst/lifxr.svg?branch=master)](https://travis-ci.org/RMHogervorst/lifxr)
+[![Travis-CI Build Status](https://travis-ci.org/RMHogervorst/lifxr.svg?branch=master)](https://travis-ci.org/RMHogervorst/lifxr)[![codecov](https://codecov.io/gh/RMHogervorst/lifxr/branch/master/graph/badge.svg)](https://codecov.io/gh/RMHogervorst/lifxr)[![Licence](https://img.shields.io/github/license/mashape/apistatus.svg)](http://choosealicense.com/licenses/mit/)
 
 LIFX
 ====

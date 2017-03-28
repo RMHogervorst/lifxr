@@ -4,28 +4,33 @@ BASE <- "https://api.lifx.com"
 VERSION <- "v1"
 
 get_accesstoken <- function(){
-    key <- Sys.getenv("LIFX_PAT",unset = NA)
+    key <- Sys.getenv("LIFX_PAT", unset = NA)
     if(is.na(key))stop("No key found")
     key
 }
-## limieten stellne: hue:[0-360]
 check_hue <- function(hue){
-    if(hue <0 | hue >360){stop("hue needs to be between 0 and 360")}
+    if(hue < 0 | hue > 360){
+        stop("hue needs to be between 0 and 360")
+        }
     hue
 }
-## saturation:[0.0-1.0]
 check_saturation <- function(value){
-    if(value <0 | value >1){stop("saturation needs to be between 0 and 1")}
+    if(value < 0 | value > 1){
+        stop("saturation needs to be between 0 and 1")
+        }
     value
 }
-## brightness:[0.0-1.0]
 check_brightness <- function(value){
-    if(value <0 | value >1){stop("brightness needs to be between 0 and 1")}
+    if(value < 0 | value > 1){
+        stop("brightness needs to be between 0 and 1")
+        }
     value
 }
 ## kelvin:[2500-9000]  # maar geef boodschap als ook saturation gegeven, slaat
 check_kelvin <- function(value){
-    if(value <2500 | value >9000){stop("kelvin needs to be between 2500 and 9000")}
+    if(value < 2500 | value > 9000){
+        stop("kelvin needs to be between 2500 and 9000")
+        }
     value
 }
 ## saturation over, want zit al in kelvin.
@@ -41,7 +46,7 @@ check_kelvin <- function(value){
 #' @import jsonlite
 #' @export
 ping <- function(){
-  results <- GET(paste0(BASE, "/", VERSION, "/lights.json"), 
+  results <- GET(paste0(BASE, "/", VERSION, "/lights.json"),
                  query = list(access_token = get_accesstoken()))
   if(results$status_code != 200)
     message("LIFX bulbs could not be reached")
@@ -59,9 +64,10 @@ ping <- function(){
 #' @return a list of all lights, status, and properties 
 #' @export
 lights <- function(selector = "all"){
-  results <- GET(paste0(BASE, "/", VERSION, "/lights/", selector), 
+  results <- GET(paste0(BASE, "/", VERSION, "/lights/", selector),
                  query = list(access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text",encoding = "utf-8"),simplifyDataFrame = F)
+  jsonlite::fromJSON(content(results, as = "text", encoding = "utf-8"),
+                     simplifyDataFrame = F)
 }
 
 #' current color
@@ -74,19 +80,18 @@ current_color <- function(selector = "all"){
   light_list <- lights(selector = selector)
   sapply(light_list, 
          function(light){
-
            if(light$color[["saturation"]] > 0)
-             paste("hsb:", 
+             paste("hsb:",
                    light$color[["hue"]], ",",
                    light$color[["saturation"]], ",",
                    light$brightness,
-                   sep="")
+                   sep = "")
              else 
                paste("kelvin:", 
                      light$color[["kelvin"]], 
                      " brightness:",
-                     light$brightness*100, "%", 
-                     sep="")
+                     light$brightness * 100, "%", 
+                     sep = "")
          })
 }
 
@@ -98,9 +103,10 @@ current_color <- function(selector = "all"){
 #' @return httr response object
 #' @export
 toggle <- function(selector = "all"){
-  results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/toggle.json"), 
+  results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, 
+                         "/toggle.json"), 
        query = list(access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 #' power
@@ -117,7 +123,7 @@ power <- function(state = c("on", "off"), selector = "all", duration = 1.0){
       query = list(power = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 
@@ -171,7 +177,7 @@ color <- function(color, selector="all", duration = 1.0, power_on = TRUE){
                    duration = duration, 
                    power_on = power_on,
                    access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 
@@ -201,7 +207,7 @@ breathe <- function(color, from_color = current_color(selector),
                    access_token = get_accesstoken())
   results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/breathe"),
        query = settings)
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 #' pulse
@@ -224,7 +230,7 @@ pulse <- function(color, from_color = current_color(selector)[[1]],
                    access_token = get_accesstoken())
   results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/pulse.json"),
        query = settings)
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 #' label
@@ -253,7 +259,7 @@ scene <- function(state = c("on", "off"), scene_id, duration = 1.0){
       query = list(state = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 #' Lists all the scenes available in the users account
@@ -263,7 +269,7 @@ scene <- function(state = c("on", "off"), scene_id, duration = 1.0){
 get_scenes <- function(){
     results <- GET(paste0(BASE, "/", VERSION, "/scenes.json"),
         query = list(access_token = get_accesstoken()))
-    jsonlite::fromJSON(content(results, as="text"))
+    jsonlite::fromJSON(content(results, as = "text"))
 }
 
 
@@ -278,7 +284,7 @@ parse_color <- function(string){
   results <- GET(paste0(BASE, "/", VERSION, "/color"), 
                  query = list(string = string,
                               access_token = get_accesstoken()))
-  jsonlite::fromJSON(content(results, as="text"))
+  jsonlite::fromJSON(content(results, as = "text"))
 }
 
 #' Set the state, a general function
