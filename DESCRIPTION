@@ -2,7 +2,7 @@ Package: lifxr
 Title: Interface to the LIFX API
 Version: 0.0.2
 Description: Simple interface to the LIFX cloud API, https://api.lifx.com.
-License: MIT + file LICENSE
+License: MIT + file LICENCE
 Authors@R: c(person('Carl', 'Boettiger', email='cboettig@gmail.com', role = c('aut', 'cre')), person("Roel M", "Hogervorst", email = "hogervorst.rm@gmail.com", role = "ctb"))
 URL: https://github.com/RMHogervorst/lifxr
 BugReports: https://github.com/RMHogervorst/lifxr/issues
