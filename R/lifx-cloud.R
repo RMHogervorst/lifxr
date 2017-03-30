@@ -26,6 +26,21 @@ check_brightness <- function(value){
         }
     value
 }
+
+#' Checks headers of incoming message for rate limiting
+#' will complain if rate limit is less then 5. 
+#' when it reaches 0 it will tell you when you can try again.
+#' For internal use.
+rate_limit_warner <- function(results){
+    headers <- headers(results)
+    attemps_this_epoch <- as.integer(headers$`x-ratelimit-remaining`)
+    next_epoch <- as.POSIXlt(as.numeric(headers$`x-ratelimit-reset`), 
+                             origin = "1970-01-01", tz = "")
+    if(attemps_this_epoch <5){warning("Rate-limit warning: only ", 
+                                      attemps_this_epoch, 
+                                      " attempts possible untill the next cycle at ",
+                                      next_epoch, " local time")}
+}
 ## kelvin:[2500-9000]  # maar geef boodschap als ook saturation gegeven, slaat
 check_kelvin <- function(value){
     if(value < 2500 | value > 9000){

@@ -1,6 +1,6 @@
 ---
 title: Interface to the LIFX API
-author: Carl Boettiger
+author: Carl Boettiger & Roel M. Hogervorst
 output:
   md_document:
     variant: markdown_github
@@ -73,3 +73,8 @@ See package documentation for details.
 ## Note: 
 I have copied and modified this package from Carl Boetinger
 see the original package https://github.com/cboettig/lifxr.
+
+
+# currently implemented
+
+- [x] rate limiting warning
