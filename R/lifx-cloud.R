@@ -63,6 +63,7 @@ check_kelvin <- function(value){
 ping <- function(){
   results <- GET(paste0(BASE, "/", VERSION, "/lights.json"),
                  query = list(access_token = get_accesstoken()))
+  rate_limit_warner(results)
   if(results$status_code != 200)
     message("LIFX bulbs could not be reached")
   else
@@ -81,6 +82,7 @@ ping <- function(){
 lights <- function(selector = "all"){
   results <- GET(paste0(BASE, "/", VERSION, "/lights/", selector),
                  query = list(access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text", encoding = "utf-8"),
                      simplifyDataFrame = F)
 }
@@ -121,6 +123,7 @@ toggle <- function(selector = "all"){
   results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, 
                          "/toggle.json"), 
        query = list(access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -138,6 +141,7 @@ power <- function(state = c("on", "off"), selector = "all", duration = 1.0){
       query = list(power = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -192,6 +196,7 @@ color <- function(color, selector="all", duration = 1.0, power_on = TRUE){
                    duration = duration, 
                    power_on = power_on,
                    access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -222,6 +227,7 @@ breathe <- function(color, from_color = current_color(selector),
                    access_token = get_accesstoken())
   results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/breathe"),
        query = settings)
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -245,6 +251,7 @@ pulse <- function(color, from_color = current_color(selector)[[1]],
                    access_token = get_accesstoken())
   results <- POST(paste0(BASE, "/", VERSION, "/lights/", selector, "/effects/pulse.json"),
        query = settings)
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -274,6 +281,7 @@ scene <- function(state = c("on", "off"), scene_id, duration = 1.0){
       query = list(state = state, 
                    duration = duration, 
                    access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -284,6 +292,7 @@ scene <- function(state = c("on", "off"), scene_id, duration = 1.0){
 get_scenes <- function(){
     results <- GET(paste0(BASE, "/", VERSION, "/scenes.json"),
         query = list(access_token = get_accesstoken()))
+    rate_limit_warner(results)
     jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -299,6 +308,7 @@ parse_color <- function(string){
   results <- GET(paste0(BASE, "/", VERSION, "/color"), 
                  query = list(string = string,
                               access_token = get_accesstoken()))
+  rate_limit_warner(results)
   jsonlite::fromJSON(content(results, as = "text"))
 }
 
@@ -325,6 +335,7 @@ set_state <- function(selector ="all", power = "on", color= NULL,
                                saturation = saturation, # doesn't work. because needs to be in color.
                                access_token = get_accesstoken())
     )
+    rate_limit_warner(results)
     httr::content(result)
 }
 
