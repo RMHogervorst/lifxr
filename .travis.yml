@@ -4,7 +4,6 @@ language: r
 sudo: false
 cache: packages
 r:
-  - oldrel
   - release
   - devel
 warnings_are_errors: true
@@ -12,8 +11,6 @@ warnings_are_errors: true
 r_github_packages:
   - jimhester/covr
   - jimhester/lintr
-
-
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
