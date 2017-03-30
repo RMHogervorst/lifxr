@@ -40,6 +40,7 @@ rate_limit_warner <- function(results){
                                       attemps_this_epoch, 
                                       " attempts possible untill the next cycle at ",
                                       next_epoch, " local time")}
+    if(results$status_code == 429){stop("rate limit. try again at ",next_epoch)}
 }
 ## kelvin:[2500-9000]  # maar geef boodschap als ook saturation gegeven, slaat
 check_kelvin <- function(value){
