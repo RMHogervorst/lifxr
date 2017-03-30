@@ -8,6 +8,23 @@ get_accesstoken <- function(){
     if(is.na(key))stop("No key found")
     key
 }
+
+#' Checks if a color is correctly specified
+#' name format: white, red, orange, yellow, cyan, green, blue, purple, or pink
+#' hue:[0-360]
+#' saturation:[0.0-1.0]
+#' brightness:[0.0-1.0]
+#' kelvin:[2500-9000] (saturation wordt 0)
+#' #RRGGBB grepl("^\\#(?:[0-9a-fA-F]{3}){1,2}$","#FFFFFF" ,perl = TRUE)
+#' rgb:0,255,255
+#'  strsplit(pangram, " ")
+#' [term]:[value] 
+# colorchecker <- function(color){
+#     color <- strsplit(color, " ")
+#     colorvector <-c("white", "red", "orange", "yellow", "cyan", "green", "blue", "purple", "pink")
+#     grepl("hue", color){}
+#     #if both kelvin and saturation, message
+# }
 check_hue <- function(hue){
     if(hue < 0 | hue > 360){
         stop("hue needs to be between 0 and 360")
@@ -31,6 +48,7 @@ check_brightness <- function(value){
 #' will complain if rate limit is less then 5. 
 #' when it reaches 0 it will tell you when you can try again.
 #' For internal use.
+#' @param results a httr response object
 rate_limit_warner <- function(results){
     headers <- headers(results)
     attemps_this_epoch <- as.integer(headers$`x-ratelimit-remaining`)
@@ -192,6 +210,7 @@ on <- function(selector = "all", duration = 1.0){
 #' @return httr response object
 #' @export
 color <- function(color, selector="all", duration = 1.0, power_on = TRUE){
+    color <- colorchecker(color)
   results <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
       query = list(color = color, 
                    duration = duration, 
@@ -301,7 +320,9 @@ get_scenes <- function(){
 
 #' parse color
 #'
-#' Parse a color string and return hue, saturation, brightness and kelvin values
+#' Parse a color string and return hue, saturation, brightness and kelvin values.
+#' This makes use of the lifx api, and not your lamp. It is just  a test to
+#'  see if your color setting would work.
 #' @param string The color string to parse
 #' @return hsbk information for the string. 
 #' @export
@@ -328,7 +349,7 @@ set_state <- function(selector ="all", power = "on", color= NULL,
     if(!is.null(brightness)){brightness <- check_brightness(brightness)}
     if(!is.null(saturation)){brightness <- check_saturation(saturation)}
     #if(grepl("hue", color)){} # extract hue and check for hue:number and check hue.
-    result <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
+    results <- PUT(paste0(BASE, "/", VERSION, "/lights/", selector, "/state.json"), 
                   query = list(power = power,
                                color= color,
                                duration = duration,
@@ -337,7 +358,19 @@ set_state <- function(selector ="all", power = "on", color= NULL,
                                access_token = get_accesstoken())
     )
     rate_limit_warner(results)
-    httr::content(result)
+    httr::content(results)
 }
 
 
+#' Is the bulb on or off?
+#' 
+current_state <- function(selector = "all"){
+    stateoflights <- lights()
+    # perhaps go through list
+    result <- list(
+        label = stateoflights[[1]]$label,
+        power = stateoflights[[1]]$power,
+        color = stateoflights[[1]]$color
+    )
+    result
+}

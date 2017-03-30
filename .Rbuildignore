@@ -9,3 +9,4 @@ LICENSE
 ^README\.Rmd$
 ^README-*\.png$
 ^colors\.R$
+^cfm_output\.rda$
